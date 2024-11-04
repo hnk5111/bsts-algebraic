@@ -84,27 +84,21 @@ public final class Exercises {
         return switch(t){
             case Empty _ -> 0;
             //case 2: were looking at a leaf node (ALL leafs have a depth of 1)
+            case NonEmpty(Empty _, _, Empty _) -> 1;
             case NonEmpty(BSTree left, Integer d, BSTree right) ->
-                    1 + Math.max(maxDepth(left), maxDepth(right)); // Depth is 1 plus the max depth of left/right subtrees
+                    1 + Math.max(maxDepth(left), maxDepth(right));
         };
     }
 
     public static int average(BSTree t) {
-        int[] result = sumAndCount(t);
-        return result[1] == 0 ? 0 : result[0] / result[1];
-    }
-
-    private static int[] sumAndCount(BSTree t) {
-        return switch (t) {
-            case Empty _ -> new int[] {0, 0};
+        int count = 0;
+        int result = switch (t) {
+            case Empty _ -> 0;
             case NonEmpty(BSTree left, Integer d, BSTree right) -> {
-                int[] leftResult = sumAndCount(left);
-                int[] rightResult = sumAndCount(right);
-                int sum = d + leftResult[0] + rightResult[0];
-                int count = 1 + leftResult[1] + rightResult[1];
-                yield new int[] {sum, count};
+                yield d + sumAll(left) + sumAll(right);
             }
         };
+        return result / (t.size());
     }
 
     public static TreeSet<Integer> toList(BSTree t) {
